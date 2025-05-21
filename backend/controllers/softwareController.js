@@ -26,19 +26,17 @@ const createSoftware = async (req, res) => {
     
     const softwareRepository = getRepository(Software);
     
-    // Check if software with the same name already exists
     const existingSoftware = await softwareRepository.findOne({ where: { name } });
     if (existingSoftware) {
       return res.status(400).json({ message: 'Software with this name already exists' });
     }
     
-    // Default access levels if not provided
     const defaultAccessLevels = ['Read', 'Write', 'Admin'];
     
     const newSoftware = softwareRepository.create({
       name,
       description: description || '',
-      accessLevels: JSON.stringify(defaultAccessLevels) // Add this field with default values
+      accessLevels: JSON.stringify(defaultAccessLevels) 
     });
     
     await softwareRepository.save(newSoftware);
@@ -49,7 +47,6 @@ const createSoftware = async (req, res) => {
   }
 };
 
-// Get software by ID
 const getSoftwareById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -74,7 +71,6 @@ const updateSoftware = async (req, res) => {
     const { id } = req.params;
     const { name, description, accessLevels } = req.body;
     
-    // Find the software to update first
     const softwareRepository = getRepository(Software);
     const software = await softwareRepository.findOne({ 
       where: { id }
@@ -84,9 +80,7 @@ const updateSoftware = async (req, res) => {
       return res.status(404).json({ message: 'Software not found' });
     }
     
-    // Only allow employees with Write access or admins to update
     if (req.user.role !== 'Admin') {
-      // Find if the user has an approved Write access request
       const requestRepository = getRepository(Request);
       const hasWriteAccess = await requestRepository.findOne({
         where: {
@@ -102,11 +96,9 @@ const updateSoftware = async (req, res) => {
       }
     }
     
-    // Update the software
     software.name = name || software.name;
     software.description = description !== undefined ? description : software.description;
     
-    // Handle accessLevels
     if (accessLevels && accessLevels.length > 0) {
       // Only admin can change access levels
       if (req.user.role === 'Admin') {
