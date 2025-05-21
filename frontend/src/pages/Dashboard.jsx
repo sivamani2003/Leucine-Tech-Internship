@@ -23,8 +23,6 @@ function Dashboard({ user }) {
     const fetchData = async () => {
       try {
         setLoading(true);
-        
-        // Fetch software list
         const softwareResponse = await fetch(`${API_URL}/software`, {
           headers: {
             'Authorization': `Bearer ${user.token}`
@@ -37,8 +35,6 @@ function Dashboard({ user }) {
         
         const softwareData = await softwareResponse.json();
         setSoftware(softwareData);
-        
-        // Fetch requests based on user role
         const requestsEndpoint = 
           user.role === 'Employee' ? '/requests/my-requests' : '/requests';
         
@@ -54,8 +50,6 @@ function Dashboard({ user }) {
         
         const requestsData = await requestsResponse.json();
         setRequests(requestsData);
-        
-        // Determine user permissions based on approved requests
         if (user.role === 'Employee') {
           const permissions = {};
           requestsData.forEach(req => {
@@ -78,13 +72,9 @@ function Dashboard({ user }) {
     
     fetchData();
   }, [user]);
-  
-  // Check if user has specific access to a software
   const hasAccess = (softwareId, accessType) => {
     return userPermissions[softwareId]?.includes(accessType) || false;
   };
-  
-  // Handle direct request from dashboard
   const handleRequestAccess = async (softwareId, accessType) => {
     try {
       const response = await fetch(`${API_URL}/requests`, {
@@ -103,8 +93,6 @@ function Dashboard({ user }) {
       if (!response.ok) {
         throw new Error('Failed to submit request');
       }
-      
-      // Refresh the requests list
       const requestsEndpoint = '/requests/my-requests';
       const requestsResponse = await fetch(`${API_URL}${requestsEndpoint}`, {
         headers: {
@@ -119,30 +107,21 @@ function Dashboard({ user }) {
       const requestsData = await requestsResponse.json();
       setRequests(requestsData);
       setRequestStatus('Request submitted successfully');
-      
-      // Clear success message after 3 seconds
       setTimeout(() => setRequestStatus(''), 3000);
       
     } catch (err) {
       setError(err.message);
       
-      // Clear error message after 3 seconds
       setTimeout(() => setError(''), 3000);
     }
   };
-
-  // Replace the handleEditSoftware function
   const handleEditSoftware = (softwareId) => {
-    // Find the software to edit
     const softwareToEdit = software.find(sw => sw.id === softwareId);
     
     if (softwareToEdit) {
-      // Parse accessLevels if it's a string
       const accessLevels = typeof softwareToEdit.accessLevels === 'string' 
         ? JSON.parse(softwareToEdit.accessLevels)
         : softwareToEdit.accessLevels || ['Read', 'Write', 'Admin'];
-        
-      // Set up the edit form
       setEditingSoftware(softwareToEdit);
       setEditForm({
         name: softwareToEdit.name,
@@ -152,8 +131,6 @@ function Dashboard({ user }) {
       setIsEditModalOpen(true);
     }
   };
-  
-  // Handle form input changes
   const handleEditFormChange = (e) => {
     const { name, value } = e.target;
     setEditForm({
@@ -162,26 +139,21 @@ function Dashboard({ user }) {
     });
   };
   
-  // Handle access levels checkbox changes
   const handleAccessLevelChange = (level) => {
     const currentLevels = [...editForm.accessLevels];
     
     if (currentLevels.includes(level)) {
-      // Remove the level if already selected
       setEditForm({
         ...editForm,
         accessLevels: currentLevels.filter(l => l !== level)
       });
     } else {
-      // Add the level if not selected
       setEditForm({
         ...editForm,
         accessLevels: [...currentLevels, level]
       });
     }
   };
-  
-  // Submit the edit form
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     
@@ -205,7 +177,6 @@ function Dashboard({ user }) {
         throw new Error('Failed to update software');
       }
       
-      // Refresh the software list
       const softwareResponse = await fetch(`${API_URL}/software`, {
         headers: {
           'Authorization': `Bearer ${user.token}`
@@ -218,24 +189,16 @@ function Dashboard({ user }) {
       
       const softwareData = await softwareResponse.json();
       setSoftware(softwareData);
-      
-      // Close the modal and reset
       setIsEditModalOpen(false);
       setEditingSoftware(null);
       setUpdateStatus('Software updated successfully');
-      
-      // Clear success message after 3 seconds
       setTimeout(() => setUpdateStatus(''), 3000);
       
     } catch (err) {
       setError(err.message);
-      
-      // Clear error message after 3 seconds
       setTimeout(() => setError(''), 3000);
     }
   };
-  
-  // Close the edit modal
   const closeEditModal = () => {
     setIsEditModalOpen(false);
     setEditingSoftware(null);
@@ -323,7 +286,6 @@ function Dashboard({ user }) {
                             : typeof sw.accessLevels === 'string' 
                               ? JSON.parse(sw.accessLevels)
                               : ['Read', 'Write', 'Admin']).map(accessType => {
-                                // Check if the user already has a pending or approved request for this access
                                 const hasExistingRequest = requests.some(
                                   req => req.software?.id === sw.id && 
                                         req.accessType === accessType && 
@@ -499,8 +461,6 @@ function Dashboard({ user }) {
           </div>
         </div>
       </div>
-
-      {/* Edit Modal with Tailwind CSS */}
       {isEditModalOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-50 flex items-center justify-center">
           <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4 md:mx-auto">

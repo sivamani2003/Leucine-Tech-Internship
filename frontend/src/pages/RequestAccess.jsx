@@ -144,7 +144,6 @@ function RequestAccess({ user }) {
                   value={selectedSoftware}
                   onChange={(e) => {
                     setSelectedSoftware(e.target.value);
-                    // Reset access type when software changes
                     if (e.target.value) {
                       const sw = software.find(s => s.id.toString() === e.target.value);
                       const types = getAccessTypes(sw);

@@ -22,8 +22,6 @@ function CreateSoftware({ user }) {
       setError('Software name is required');
       return;
     }
-    
-    // Convert access levels to array format
     const accessLevelsArray = [];
     if (accessLevels.read) accessLevelsArray.push('Read');
     if (accessLevels.write) accessLevelsArray.push('Write');

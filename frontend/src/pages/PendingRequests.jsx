@@ -55,8 +55,6 @@ function PendingRequests({ user }) {
         const data = await response.json();
         throw new Error(data.message || `Failed to ${status.toLowerCase()} request`);
       }
-      
-      // Refresh the requests list
       fetchRequests();
       alert(`Request ${status.toLowerCase()} successfully`);
     } catch (err) {

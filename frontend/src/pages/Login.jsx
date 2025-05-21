@@ -29,11 +29,7 @@ function Login({ onLogin }) {
       if (!response.ok) {
         throw new Error(data.message || 'Login failed');
       }
-      
-      // Call the onLogin function with user data
       onLogin({ ...data.user, token: data.token });
-      
-      // Redirect to dashboard
       navigate('/dashboard');
     } catch (err) {
       setError('Login error: ' + err.message);

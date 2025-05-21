@@ -15,7 +15,6 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Check if user is stored in localStorage
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
@@ -32,13 +31,10 @@ function App() {
     localStorage.removeItem('user');
   };
 
-  // Auth guard for routes
   const ProtectedRoute = ({ children, roles = [] }) => {
     if (!user) {
       return <Navigate to="/login" replace />;
     }
-
-    // If roles are specified and user's role is not included, redirect to dashboard
     if (roles.length > 0 && !roles.includes(user.role)) {
       return <Navigate to="/dashboard" replace />;
     }
