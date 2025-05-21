@@ -8,7 +8,7 @@ function Login({ onLogin }) {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   
-  const API_URL = 'http://localhost:5002/api';
+  const API_URL = 'https://leucine-tech-internship.onrender.com/api';
   
   const handleSubmit = async (e) => {
     e.preventDefault();
