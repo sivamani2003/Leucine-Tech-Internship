@@ -13,7 +13,7 @@ const app = express();
 const PORT = process.env.PORT || 5002;
 
 // Middleware
-const cors = require('cors');
+
 
 const allowedOrigins = [
   'https://leucine-tech-internship.vercel.app',
