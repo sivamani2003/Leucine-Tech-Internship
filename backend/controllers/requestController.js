@@ -53,7 +53,6 @@ const createRequest = async (req, res) => {
     
     const requestRepository = getRepository(Request);
     
-    // Check if user already has a pending request for this software
     const existingRequest = await requestRepository.findOne({
       where: {
         user: { id: userId },
@@ -76,7 +75,6 @@ const createRequest = async (req, res) => {
     
     await requestRepository.save(newRequest);
     
-    // Get the full request with relations for the response
     const savedRequest = await requestRepository.findOne({
       where: { id: newRequest.id },
       relations: ['software', 'user']
@@ -138,7 +136,6 @@ const getRequestById = async (req, res) => {
       return res.status(404).json({ message: 'Request not found' });
     }
     
-    // Only allow admins or the request owner to view the request
     if (req.user.role !== 'Admin' && req.user.role !== 'Manager' && request.user.id !== req.user.id) {
       return res.status(403).json({ message: 'You do not have permission to view this request' });
     }
@@ -157,3 +154,4 @@ module.exports = {
   updateRequestStatus,
   getRequestById
 };
+
