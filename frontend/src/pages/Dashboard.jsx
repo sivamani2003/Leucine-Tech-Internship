@@ -17,7 +17,7 @@ function Dashboard({ user }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [updateStatus, setUpdateStatus] = useState('');
   
-  const API_URL = 'http://localhost:5002/api';
+  const API_URL = 'https://leucine-tech-internship.onrender.com/api';
   
   useEffect(() => {
     const fetchData = async () => {
